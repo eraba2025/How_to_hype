@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYPE Sports Innovation | Interactive Magazine</title>
+    <style>
+        :root {
+            --primary: #00E5FF; /* Cyan Electric */
+            --secondary: #121212; /* Deep Black */
+            --accent: #FFD700; /* Gold */
+            --text: #FFFFFF;
+            --text-muted: #B0B0B0;
+            --card-bg: rgba(30, 30, 30, 0.85);
+            --glass: rgba(255, 255, 255, 0.05);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* מניעת בחירת טקסט */
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 20%);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(10, 10, 10, 0.95);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            position: fixed;
+            right: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.5);
+        }
+
+        .brand {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .brand h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            background: linear-gradient(45deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand span {
+            font-size: 0.9rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 1rem;
+        }
+
+        .nav-btn {
+            width: 100%;
+            text-align: right;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--text);
+            background: linear-gradient(90deg, rgba(0, 229, 255, 0.1), transparent);
+            border-right-color: var(--primary);
+            padding-right: 1.5rem;
+        }
+
+        .creator-credit {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1rem;
+        }
+
+        .creator-credit strong {
+            color: var(--accent);
+            display: block;
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-right: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            padding: 3rem;
+            position: relative;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        /* Cards & Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            opacity: 0.5;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Systems Grid */
+        .system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .system-card {
+            background: linear-gradient(145deg, #1e1e1e, #252525);
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .system-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Quiz Styling */
+        .quiz-container {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid var(--primary);
+        }
+
+        .question {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 2rem;
+        }
+
+        .question h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .options label {
+            display: block;
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .options label:hover {
+            background: rgba(0, 229, 255, 0.1);
+        }
+
+        .options input {
+            margin-left: 10px;
+        }
+
+        button.submit-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button.submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+
+        #result {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+            .main-content {
+                width: 100%;
+                margin-right: 0;
+                padding: 1.5rem;
+            }
+            .hero-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;"> <nav class="sidebar">
+        <div class="brand">
+            <h1>HYPE</h1>
+            <span>Sports Innovation</span>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><button class="nav-btn active" onclick="showSection('strategy')">💎 אסטרטגיה וחזון</button></li>
+            <li class="nav-item"><button class="nav-btn" onclick="showSection('trends')">📈 מגמות שוק</button></li>
+            <li class="nav-item"><button class="nav-btn" onclick="showSection('systems')">🛠️ מערכות עבודה</button></li>
+            <li class="nav-item"><button class="nav-btn" onclick="showSection('investment')">💰 עולם ההשקעות</button></li>
+            <li class="nav-item"><button class="nav-btn" onclick="showSection('quiz')">🏆 מבחן ידע</button></li>
+        </ul>
+        <div class="creator-credit">
+            Interactive Learning Module
+            <strong>Made by E.B</strong>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <div id="strategy" class="section active">
+            <h2 class="hero-title">אסטרטגיה ומודל עסקי</h2>
+            <p class="hero-subtitle">החזון של HYPE הוא להשפיע לחיוב על חיי אנשים באמצעות כוח הספורט והחדשנות. אנו מחברים בין מעל 11,000 סטארטאפים ל-100+ שותפים גלובליים.</p>
+
+            <div class="grid-container">
+                <div class="card">
+                    <h3>🤖 חזון AI Captain 2030</h3>
+                    <p>היעד לשנת 2030 הוא ספורט מבוסס דאטה. <strong>AI Captain</strong> הוא לא רק סיסמה, אלא שכבה אינטליגנטית שמסייעת למאמנים, שחקנים ומנהלים לקבל החלטות בזמן אמת.</p>
+                    <span class="tag">העתיד כבר כאן</span>
+                </div>
+                <div class="card">
+                    <h3>💼 המודל העסקי</h3>
+                    <p>מודל מבוסס Equity (מניות/אופציות). אנו מספקים ליווי וחיבורים לסטארטאפים תמורת אחזקות, ומאפשרים למשקיעים להצטרף לפורטפוליו המגוון שלנו.</p>
+                    <span class="tag">WIN-WIN</span>
+                </div>
+                <div class="card">
+                    <h3>🦈 Shark Tank Jury</h3>
+                    <p>גוף מקצועי של משקיעים ובכירים (כמו יו"ר אדידס לשעבר) ששופט סטארטאפים באירועי דמו. זהו רגע האמת בו נוצרים חיבורים עסקיים.</p>
+                    <span class="tag">יוקרה</span>
+                </div>
+                <div class="card">
+                    <h3>🏆 מודל ה-Top 10</h3>
+                    <p>בכל שנה נבחרים 10 הסטארטאפים המשפיעים ביותר. זוהי מקפצה בינלאומית המעניקה חשיפה, מנטורינג וגישה ישירה למועדוני ענק.</p>
+                    <span class="tag">מצוינות</span>
+                </div>
+            </div>
+
+            <div class="card" style="border-right: 4px solid var(--accent);">
+                <h3>📊 KPIs - מדדי הצלחה</h3>
+                <ul style="margin-right: 20px; line-height: 1.8;">
+                    <li><strong>PPS:</strong> כמות פגישות פרטיות בין סטארטאפים למקבלי החלטות.</li>
+                    <li><strong>עסקאות בפועל:</strong> פיילוטים והסכמים שנחתמו.</li>
+                    <li><strong>חיבורים למשקיעים:</strong> כמות הקישורים המוצלחים לגיוס הון.</li>
+                    <li><strong>AI Readiness:</strong> רמת אימוץ טכנולוגיות בינה מלאכותית בארגון.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="trends" class="section">
+            <h2 class="hero-title">מגמות ושחקנים בשוק</h2>
+            <p class="hero-subtitle">הבנת האקו-סיסטם: ממי שמנהל את הכסף ועד לטכנולוגיה שמשנה את המגרש.</p>
+
+            <div class="grid-container">
+                <div class="card">
+                    <h3>שחקני המפתח</h3>
+                    <p><strong>מועדונים:</strong> ניהול הקבוצה והקשר עם האוהד (ברצלונה, מכבי).</p>
+                    <p><strong>ליגות:</strong> מאגדות מועדונים וזכויות שידור (NBA, ליגת העל).</p>
+                    <p><strong>פדרציות:</strong> גופים רגולטוריים ואירועים בינלאומיים (FIFA).</p>
+                    <p><strong>מותגים וספונסרים:</strong> המממנים הגדולים (Nike, Pepsi).</p>
+                </div>
+                <div class="card">
+                    <h3>🧬 AI & Performance</h3>
+                    <p>שימוש בבינה מלאכותית למניעת פציעות, ניתוח טקטי בזמן אמת ושיפור ביצועי ספורטאים באמצעות חיישנים ודאטה.</p>
+                </div>
+                <div class="card">
+                    <h3>📣 Fan Engagement</h3>
+                    <p>האוהד במרכז. מעבר לצפייה פסיבית לחוויה אינטראקטיבית: VR/AR, ניתוח רגשות, והתאמה אישית של תכנים ומרצ'נדייז (Fan Analytics).</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="systems" class="section">
+            <h2 class="hero-title">מערכות העבודה ב-HYPE</h2>
+            <p class="hero-subtitle">ארגז הכלים הדיגיטלי שמאפשר לנו לנהל אופרציה גלובלית.</p>
+
+            <div class="system-grid">
+                <div class="system-card">
+                    <span class="system-icon">🚀</span>
+                    <h3>Apollo</h3>
+                    <p>ניהול מכירות B2B, איתור לידים ודאטה על סטארטאפים.</p>
+                </div>
+                <div class="system-card">
+                    <span class="system-icon">📝</span>
+                    <h3>Fireflies</h3>
+                    <p>AI לתיעוד וסיכום שיחות אוטומטי.</p>
+                </div>
+                <div class="system-card">
+                    <span class="system-icon">📅</span>
+                    <h3>Monday</h3>
+                    <p>מערכת ההפעלה הארגונית. ניהול פרויקטים ומשימות.</p>
+                </div>
+                <div class="system-card">
+                    <span class="system-icon">🐵</span>
+                    <h3>Mailchimp</h3>
+                    <p>ניהול קמפיינים במייל וקשר עם הקהילה.</p>
+                </div>
+                <div class="system-card">
+                    <span class="system-icon">🎨</span>
+                    <h3>Canva</h3>
+                    <p>עיצוב גרפי מהיר לתוכן ויזואלי מרשים.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="investment" class="section">
+            <h2 class="hero-title">עולם השקעות הספורט-טק</h2>
+            <p class="hero-subtitle">כיצד רעיון הופך ליוניקורן? המסלול של הסטארטאפ.</p>
+
+            <div class="card" style="margin-bottom: 2rem;">
+                <h3>🛣️ מסלול החיים של סטארטאפ</h3>
+                <ol style="margin-right: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li><strong>הרעיון:</strong> זיהוי כאב אמיתי בשוק.</li>
+                    <li><strong>אימות (Validation):</strong> בדיקה האם השוק צריך את זה.</li>
+                    <li><strong>גיוס ראשוני (Pre-Seed/Seed):</strong> חברים, משפחה, אנג'לים.</li>
+                    <li><strong>פיילוט:</strong> הוכחת היתכנות עם קבוצה או ליגה.</li>
+                    <li><strong>צמיחה (Scale):</strong> כניסה לקרנות הון סיכון (VC) והתרחבות גלובלית.</li>
+                </ol>
+            </div>
+
+            <div class="grid-container">
+                <div class="card" style="border-color: var(--accent);">
+                    <h3>👀 מה משקיעים מחפשים?</h3>
+                    <p>✔️ <strong>צוות מנצח:</strong> הבנה עמוקה בספורט ובעסקים.</p>
+                    <p>✔️ <strong>פיילוט מוכח:</strong> נתונים מהשטח, לא רק מצגות.</p>
+                    <p>✔️ <strong>Scalability:</strong> יכולת לגדול לשווקים גלובליים.</p>
+                    <p>✔️ <strong>יתרון טכנולוגי:</strong> קניין רוחני, אלגוריתם ייחודי או AI.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz" class="section">
+            <h2 class="hero-title">מבחן הידע הגדול</h2>
+            <div class="quiz-container">
+                <form id="hypeQuiz">
+                    <div class="question">
+                        <h3>1. מהו חזון ה-AI Captain?</h3>
+                        <div class="options">
+                            <label><input type="radio" name="q1" value="a"> רובוט שמשחק כדורגל במקום שחקנים.</label>
+                            <label><input type="radio" name="q1" value="b"> שכבה אינטליגנטית לקבלת החלטות מבוססות דאטה למאמנים ומנהלים.</label>
+                            <label><input type="radio" name="q1" value="c"> אפליקציה למכירת כרטיסים בלבד.</label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>2. מהו מודל ה-Top 10?</h3>
+                        <div class="options">
+                            <label><input type="radio" name="q2" value="a"> רשימת עשרת השחקנים הטובים בעולם.</label>
+                            <label><input type="radio" name="q2" value="b"> בחירה שנתית של 10 הסטארטאפים החדשניים ביותר לקידום מואץ.</label>
+                            <label><input type="radio" name="q2" value="c"> עשרת הכללים לניהול משא ומתן.</label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>3. לאיזו מטרה משמשת מערכת Apollo ב-HYPE?</h3>
+                        <div class="options">
+                            <label><input type="radio" name="q3" value="a"> עיצוב גרפי.</label>
+                            <label><input type="radio" name="q3" value="b"> ניהול משימות פנימי.</label>
+                            <label><input type="radio" name="q3" value="c"> איתור לידים וניהול מכירות B2B.</label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>4. מהו הדבר החשוב ביותר שמשקיע ספורט-טק מחפש (שונה מתחומים אחרים)?</h3>
+                        <div class="options">
+                            <label><input type="radio" name="q4" value="a"> פיילוטים מוכחים ואימוץ בשטח אצל קבוצות/ליגות.</label>
+                            <label><input type="radio" name="q4" value="b"> מצגת יפה ומעוצבת.</label>
+                            <label><input type="radio" name="q4" value="c"> משרדים במרכז תל אביב.</label>
+                        </div>
+                    </div>
+
+                    <button type="button" class="submit-btn" onclick="checkQuiz()">בדוק תוצאות</button>
+                </form>
+                <div id="result"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            // Deactivate all buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected
+            document.getElementById(sectionId).classList.add('active');
+            // Activate button (logic based on index matches order)
+            const buttons = ['strategy', 'trends', 'systems', 'investment', 'quiz'];
+            const index = buttons.indexOf(sectionId);
+            document.querySelectorAll('.nav-btn')[index].classList.add('active');
+        }
+
+        function checkQuiz() {
+            const answers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'c',
+                q4: 'a'
+            };
+            let score = 0;
+            let total = 4;
+            const form = document.getElementById('hypeQuiz');
+            const formData = new FormData(form);
+            
+            for (let [key, value] of formData.entries()) {
+                if (answers[key] === value) score++;
+            }
+
+            const resultDiv = document.getElementById('result');
+            const percentage = (score / total) * 100;
+            
+            let msg = "";
+            if (percentage === 100) msg = "מושלם! אתה מוכן להוביל את המהפכה. 🏆";
+            else if (percentage >= 75) msg = "כל הכבוד! שליטה יפה בחומר. 🥈";
+            else msg = "כדאי לחזור על החומר ולנסות שוב. 💪";
+
+            resultDiv.innerHTML = `ציון: ${score}/${total}<br><span style="font-size: 1rem; color: #fff;">${msg}</span>`;
+        }
+
+        // --- ANTI-TAMPER PROTECTION (Security Script) ---
+        // הערה: הגנה זו היא ברמת הדפדפן בלבד. מתכנת מנוסה עדיין יוכל לגשת לקוד.
+        
+        // חסימת מקשים מיוחדים (F12, Ctrl+U, Ctrl+Shift+I)
+        document.onkeydown = function(e) {
+            if(event.keyCode == 123) { // F12
+                return false;
+            }
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl+Shift+I
+                return false;
+            }
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+Shift+C
+                return false;
+            }
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl+Shift+J
+                return false;
+            }
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U
+                return false;
+            }
+        }
+
+        // חסימת קליק ימני (נוסף גם ב-TAG של ה-BODY אבל זה ליתר ביטחון)
+        document.addEventListener('contextmenu', event => event.preventDefault());
+    </script>
+</body>
+</html>
